@@ -1,0 +1,715 @@
+/* ==========================================================
+   Dumpster Toast Games: main style sheet.
+   Order: fonts, tokens, base, layout, components, pages,
+   breakpoints, motion.
+   ========================================================== */
+
+
+/* ---------- 1. Fonts ---------- */
+
+/* Self-hosted Latin subsets. Do not load fonts from other servers. */
+@font-face {
+  font-family: "Fredoka";
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url("../fonts/fredoka-latin-wght-normal.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Nunito";
+  font-style: normal;
+  font-weight: 200 1000;
+  font-display: swap;
+  src: url("../fonts/nunito-latin-wght-normal.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+
+/* ---------- 2. Tokens ---------- */
+
+:root {
+  color-scheme: light;
+
+  /* Palette: clear pastels on a warm off-white. */
+  --paper: #f4f0e9;
+  --paper-rgb: 244 240 233;
+  --surface: #fdfbf7;
+  --apricot: #f7b78a;
+  --mint: #9fd8b0;
+  --sky: #94bdf2;
+  --pink: #f5a3ad;
+  --lavender: #bba6f2;
+  --ink: #2f2934;
+  --ink-soft: #5d5561; /* Use only on paper or surface. */
+  --ink-deep: #1c181f;
+  --ink-rgb: 47 41 52; /* Tint for all shadows. */
+
+  /* Page accent. The home page uses this value. Other pages set their own. */
+  --accent: var(--apricot);
+
+  /* Type */
+  --font-display: "Fredoka", ui-rounded, "Arial Rounded MT Bold", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Nunito", ui-rounded, "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  /* Size */
+  --gutter: 1rem;
+  --content-max: 68rem;
+  --radius-sm: 0.375rem;
+  --radius-md: 0.625rem;
+  --radius-lg: 1rem;
+
+  /* Soft shadows */
+  --shadow-md: 0 1px 2px rgb(var(--ink-rgb) / 0.06), 0 6px 16px rgb(var(--ink-rgb) / 0.07), 0 22px 40px -16px rgb(var(--ink-rgb) / 0.16);
+  --shadow-header: 0 1px 0 rgb(var(--ink-rgb) / 0.08);
+
+  /* Drop shadows. These follow the alpha shape of an image. */
+  --drop-md: drop-shadow(0 3px 4px rgb(var(--ink-rgb) / 0.14)) drop-shadow(0 12px 16px rgb(var(--ink-rgb) / 0.12));
+  --drop-lg: drop-shadow(0 6px 8px rgb(var(--ink-rgb) / 0.16)) drop-shadow(0 22px 28px rgb(var(--ink-rgb) / 0.2));
+
+  /* Buttons: a solid edge below, plus a soft shadow. */
+  --ledge: 0.25rem;
+  --ledge-lift: 0.125rem;
+  --edge-mix: 28%;
+  --shadow-btn: 0 0.375rem 0.75rem -0.25rem rgb(var(--ink-rgb) / 0.25);
+  --shadow-btn-hover: 0 0.625rem 1rem -0.375rem rgb(var(--ink-rgb) / 0.28);
+  --shadow-btn-active: 0 1px 2px rgb(var(--ink-rgb) / 0.2);
+  --btn-hairline: inset 0 0 0 1px rgb(var(--ink-rgb) / 0.1);
+
+  /* Motion */
+  --speed: 0.15s;
+}
+
+
+/* ---------- 3. Base ---------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  overflow-wrap: break-word;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.15;
+  text-wrap: balance;
+}
+
+p {
+  margin: 0;
+  text-wrap: pretty;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 3px;
+}
+
+::selection {
+  background: var(--lavender);
+  color: var(--ink);
+}
+
+/* Hide text on screen, but keep it for screen readers. */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+
+/* ---------- 4. Layout ---------- */
+
+.container {
+  width: min(100% - 2 * var(--gutter), var(--content-max));
+  margin-inline: auto;
+}
+
+/* Header */
+.site-header {
+  position: relative;
+  z-index: 10;
+  padding-block: 0.75rem 0.875rem;
+  background: rgb(var(--paper-rgb) / 0.92);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  box-shadow: var(--shadow-header);
+}
+
+.header-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem 2rem;
+}
+
+.wordmark {
+  border-radius: var(--radius-sm);
+  font-family: var(--font-display);
+  font-size: 1.375rem;
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+}
+
+.site-nav {
+  width: 100%;
+}
+
+.nav-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem 0.625rem;
+  margin: 0;
+  padding: 0 0 var(--ledge);
+  list-style: none;
+}
+
+.nav-list .btn {
+  width: 100%;
+  padding-inline: 0.75em;
+}
+
+/* Main and footer */
+.site-main {
+  flex: 1;
+  padding-block: clamp(2rem, 5vw, 3.5rem) clamp(3.5rem, 8vw, 5.5rem);
+}
+
+.site-footer {
+  padding-block: 0 2.25rem;
+  color: var(--ink-soft);
+  font-size: 0.9375rem;
+}
+
+.footer-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 0;
+  padding: 0 var(--gutter);
+  list-style: none;
+}
+
+/* Narrow screens: the copyright is alone on the first line. */
+.footer-list li:first-child {
+  flex-basis: 100%;
+  text-align: center;
+}
+
+/* Dot between two items on the same line. Screen readers skip the dot. */
+.footer-list li:nth-child(n + 3)::before {
+  content: "\b7";
+  content: "\b7" / "";
+  padding-inline: 0.6em;
+}
+
+/* Text links: a smaller focus ring offset, so the ring stays clear of the next words. */
+.site-footer a {
+  border-radius: 2px;
+  outline-offset: 2px;
+  text-underline-offset: 0.2em;
+}
+
+@media (hover: hover) {
+  .site-footer a:hover {
+    color: var(--ink);
+  }
+}
+
+/* The link to the current page. */
+.site-footer a[aria-current="page"] {
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+
+/* ---------- 5. Components ---------- */
+
+/* Button with a solid edge below. Set --btn-bg to change the color. */
+.btn {
+  --btn-bg: var(--surface);
+  --btn-edge: color-mix(in srgb, var(--btn-bg), var(--ink) var(--edge-mix));
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem;
+  padding: 0.5em 1.15em;
+  border-radius: var(--radius-md);
+  background: var(--btn-bg);
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.1;
+  text-align: center;
+  text-decoration: none;
+  box-shadow: var(--btn-hairline), 0 var(--ledge) 0 var(--btn-edge), var(--shadow-btn);
+}
+
+@media (hover: hover) {
+  .btn:hover {
+    translate: 0 calc(-1 * var(--ledge-lift));
+    box-shadow: var(--btn-hairline), 0 calc(var(--ledge) + var(--ledge-lift)) 0 var(--btn-edge), var(--shadow-btn-hover);
+  }
+}
+
+/* Keep this rule after the :hover rule. Then the pressed state overrides the hover state. */
+.btn:active {
+  translate: 0 var(--ledge);
+  box-shadow: var(--btn-hairline), 0 0 0 var(--btn-edge), var(--shadow-btn-active);
+}
+
+.btn--accent {
+  --btn-bg: var(--accent);
+}
+
+/* Fixed colors. A button that links to a page uses the color of that page. */
+.btn--apricot { --btn-bg: var(--apricot); }
+.btn--mint { --btn-bg: var(--mint); }
+.btn--sky { --btn-bg: var(--sky); }
+.btn--pink { --btn-bg: var(--pink); }
+
+.btn--large {
+  --ledge: 0.3125rem;
+
+  min-height: 3.25rem;
+  padding-inline: 1.5em;
+  font-size: 1.125rem;
+}
+
+/* Current page in the nav: dark fill, text in the color of the page. */
+.btn[aria-current="page"] {
+  --btn-edge: var(--ink-deep);
+
+  background: var(--ink);
+  color: var(--btn-bg);
+}
+
+.skip-link {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 100;
+}
+
+.skip-link:not(:focus) {
+  translate: 0 -200%;
+}
+
+/* Card */
+.card {
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-md);
+}
+
+/* Inner page title with a short accent bar below it. */
+.page-title {
+  margin-bottom: clamp(2rem, 5vw, 3rem);
+  font-size: clamp(2.25rem, 7vw, 3.5rem);
+  letter-spacing: -0.015em;
+}
+
+.page-title::after {
+  content: "";
+  display: block;
+  width: 3rem;
+  height: 0.3125rem;
+  margin-top: 1rem;
+  background: var(--accent);
+}
+
+/* Section */
+.section + .section {
+  margin-top: clamp(3rem, 8vw, 4.5rem);
+}
+
+.section-title {
+  margin-bottom: 1.25rem;
+  font-size: clamp(1.375rem, 4vw, 1.75rem);
+}
+
+/* Grid for cards. Copy one item to add a new card. */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
+  gap: clamp(1.25rem, 3vw, 1.75rem);
+}
+
+/* Email call to action. The card is only as wide as its content. */
+.email-card {
+  display: grid;
+  gap: 1.5rem;
+  width: fit-content;
+  max-width: 40rem;
+  padding: clamp(1.5rem, 5vw, 2.5rem);
+}
+
+.email-intro {
+  font-size: 1.125rem;
+}
+
+.email-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem 1.25rem;
+}
+
+/* Address as plain text. One click selects all of it. */
+.email-address {
+  padding: 0.4em 0.85em;
+  border: 1px solid rgb(var(--ink-rgb) / 0.18);
+  border-radius: var(--radius-sm);
+  background: var(--paper);
+  font-size: clamp(0.9375rem, 4vw, 1.0625rem);
+  font-weight: 700;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+  -webkit-user-select: all;
+  user-select: all;
+}
+
+
+/* ---------- 6. Pages ---------- */
+
+.page-games { --accent: var(--mint); }
+.page-work { --accent: var(--sky); }
+.page-contact { --accent: var(--pink); }
+.page-privacy { --accent: var(--lavender); }
+
+/* Home: hero with the wordmark logo */
+.hero {
+  display: grid;
+  place-items: center;
+  padding-block: clamp(3rem, 10vw, 7rem) clamp(3.5rem, 10vw, 7rem);
+}
+
+.logo {
+  display: grid;
+  text-align: center;
+}
+
+.logo-main {
+  font-size: clamp(2.25rem, 13vw, 7.5rem);
+  line-height: 0.95;
+  letter-spacing: -0.025em;
+  text-shadow: 0 0.03em 0.08em rgb(var(--ink-rgb) / 0.12);
+}
+
+/* "Games" between two thin accent rules. */
+.logo-sub {
+  display: flex;
+  align-items: center;
+  gap: 0.9em;
+  margin-top: 0.9em;
+  color: var(--ink-soft);
+  font-size: clamp(0.875rem, 2.4vw, 1.375rem);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.6em;
+  text-transform: uppercase;
+}
+
+.logo-sub::before,
+.logo-sub::after {
+  content: "";
+  flex: 1;
+  height: 2px;
+  background: var(--accent);
+}
+
+/* Letter spacing adds space after the last letter. Add the same space on the left. */
+.logo-sub::before {
+  margin-right: 0.6em;
+}
+
+/* Home: about card */
+.about {
+  max-width: 46rem;
+  margin-inline: auto;
+  padding: clamp(1.5rem, 6vw, 2.75rem);
+}
+
+.about p {
+  font-size: 1.125rem;
+}
+
+.about-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1.75rem;
+}
+
+/* Games: cards for our own games */
+.game-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Solid color cover with the genre in large type. */
+.game-cover {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 0.375rem;
+  aspect-ratio: 16 / 10;
+  padding: 1.25rem 1.5rem;
+}
+
+.game-cover--sky {
+  background: var(--sky);
+}
+
+.game-cover--lavender {
+  background: var(--lavender);
+}
+
+.cover-eyebrow {
+  font-family: var(--font-display);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.cover-genre {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 7vw, 2.75rem);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+
+.game-info {
+  padding: 1.125rem 1.5rem 1.25rem;
+}
+
+.game-title {
+  font-size: 1.375rem;
+  word-spacing: 0.05em;
+}
+
+/* Games: games we worked on. The PNG has its own rounded corners and halo.
+   Do not add a border, a background or a box-shadow. Use drop-shadow only. */
+.partner {
+  display: grid;
+  justify-items: start;
+  margin: 0;
+}
+
+/* The PNG has 15px of clear space on the left (15 / 302 = 4.97%).
+   Move the link left by that amount. Then the art starts at the content edge.
+   A translate percentage uses the width of the link. Thus the shift stays correct when the image is smaller.
+   For an image with no clear space, set --art-shift to 0. */
+.partner-link {
+  --art-shift: -4.97%;
+
+  display: block;
+  border-radius: 1.5rem;
+  outline-offset: -0.5rem;
+  translate: var(--art-shift) 0;
+}
+
+.partner-link img {
+  filter: var(--drop-md);
+}
+
+@media (hover: hover) {
+  .partner-link:hover {
+    translate: var(--art-shift) -0.375rem;
+  }
+
+  .partner-link:hover img {
+    filter: var(--drop-lg);
+  }
+}
+
+.partner-link:focus-visible {
+  translate: var(--art-shift) -0.375rem;
+}
+
+.partner-link:focus-visible img {
+  filter: var(--drop-lg);
+}
+
+.partner-caption {
+  margin-top: 0.125rem;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+/* Work-For-Hire: disciplines */
+.discipline-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.discipline {
+  position: relative;
+  overflow: hidden;
+  padding: 1.125rem 1.5rem 1.125rem 1.875rem;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+/* Straight accent stripe on the left. The card corners clip it. */
+.discipline::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 0.375rem;
+  background: var(--accent);
+}
+
+
+/* Privacy: one card of prose. Lines stay short for easy reading. */
+.prose {
+  max-width: 46rem;
+  padding: clamp(1.5rem, 6vw, 2.75rem);
+}
+
+.prose > * + * {
+  margin-top: 0.875rem;
+}
+
+.prose h2 {
+  margin-top: 2.25rem;
+  font-size: clamp(1.25rem, 3.5vw, 1.5rem);
+}
+
+.prose ul {
+  padding-left: 1.25rem;
+}
+
+.prose li + li {
+  margin-top: 0.25rem;
+}
+
+.prose li::marker {
+  color: var(--ink-soft);
+}
+
+.prose a {
+  border-radius: 2px;
+  outline-offset: 2px;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+@media (hover: hover) {
+  .prose a:hover {
+    text-decoration-thickness: 2px;
+  }
+}
+
+.prose-date {
+  color: var(--ink-soft);
+  font-size: 0.9375rem;
+}
+
+/* ---------- 7. Breakpoints ---------- */
+
+@media (min-width: 30em) {
+  /* Stick the header only when the nav fits on one row. */
+  .site-header {
+    position: sticky;
+    top: 0;
+  }
+
+  .site-nav {
+    width: auto;
+  }
+
+  .nav-list {
+    grid-template-columns: repeat(4, auto);
+  }
+}
+
+/* The footer fits on one line, with space to spare for a wider fallback font. */
+@media (min-width: 34em) {
+  .footer-list li:first-child {
+    flex-basis: auto;
+  }
+
+  .footer-list li:nth-child(2)::before {
+    content: "\b7";
+    content: "\b7" / "";
+    padding-inline: 0.6em;
+  }
+}
+
+@media (min-width: 40em) {
+  .nav-list .btn {
+    padding-inline: 1.1em;
+  }
+}
+
+@media (min-width: 56em) {
+  .header-inner {
+    justify-content: space-between;
+  }
+}
+
+
+/* ---------- 8. Motion ---------- */
+
+/* Transitions run only in this media query. */
+@media (prefers-reduced-motion: no-preference) {
+  .btn {
+    transition: translate var(--speed) ease-out, box-shadow var(--speed) ease-out;
+  }
+
+  .partner-link {
+    transition: translate 0.2s ease-out;
+  }
+
+  .partner-link img {
+    transition: filter 0.2s ease-out;
+  }
+}
